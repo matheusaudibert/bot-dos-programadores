@@ -68,6 +68,23 @@ client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
 //   await handleWelcome(member);
 // }); Retirado por enquanto
 
+// Servidor HTTP para o Render
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("Bot dos Programadores está rodando!");
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor HTTP rodando na porta ${PORT}`);
+});
+
 // Fazer login com o token do bot
 client
   .login(process.env.BOT_TOKEN)
