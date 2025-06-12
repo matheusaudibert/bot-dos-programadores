@@ -40,7 +40,7 @@ client.once(Events.ClientReady, async (readyClient) => {
     await sendColorEmbed(readyClient);
 
     // Iniciar o envio de mensagens aleatórias
-    // startRandomMessageInterval(readyClient);
+    startRandomMessageInterval(readyClient);
   } catch (error) {
     console.error("Erro ao processar informações do servidor:", error);
   }

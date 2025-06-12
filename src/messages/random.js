@@ -35,6 +35,11 @@ const RANDOM_MESSAGES = [
       `Precisa de ajuda? Peça ajuda para a comunidade na categoria *Discussões*.`,
     channelIdVar: null, // Não menciona um canal específico diretamente na mensagem
   },
+  {
+    text: (channelId) =>
+      `Quer apoiar o servidor? Faça uma doação no canal <#${channelId}> e receba o cargo <@&${process.env.APOIADOR_ROLE_ID}>.`,
+    channelIdVar: "HELP_CHANNEL_ID",
+  },
 ];
 
 async function sendRandomMessage(client) {
