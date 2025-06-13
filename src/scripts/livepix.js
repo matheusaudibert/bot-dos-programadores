@@ -1,6 +1,6 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
 const { Client, GatewayIntentBits } = require("discord.js");
-const fetch = require("node-fetch");
 
 const {
   BOT_TOKEN,
@@ -10,6 +10,12 @@ const {
   CLIENT_SECRET,
   CHAT_CHANNEL_ID,
 } = process.env;
+
+// Validar token antes de criar o cliente
+if (!BOT_TOKEN) {
+  console.error("BOT_TOKEN não está definido no arquivo .env");
+  process.exit(1);
+}
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],

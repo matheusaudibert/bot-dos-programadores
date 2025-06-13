@@ -4,7 +4,7 @@ on:
   schedule:
     # Executa a cada 1 hora (0 minutos de cada hora)
     - cron: "0 * * * *"
-  workflow_dispatch:
+  workflow_dispatch: # Permite execução manual
 
 jobs:
   check-donations:
@@ -22,6 +22,20 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Verify environment variables
+        run: |
+          echo "Checking environment variables..."
+          if [ -z "$BOT_TOKEN" ]; then echo "BOT_TOKEN is not set"; exit 1; fi
+          if [ -z "$GUILD_ID" ]; then echo "GUILD_ID is not set"; exit 1; fi
+          if [ -z "$CLIENT_ID" ]; then echo "CLIENT_ID is not set"; exit 1; fi
+          if [ -z "$CLIENT_SECRET" ]; then echo "CLIENT_SECRET is not set"; exit 1; fi
+          echo "All required environment variables are set"
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GUILD_ID: ${{ secrets.GUILD_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
       - name: Run LivePix donation check
         run: node src/scripts/livepix.js
