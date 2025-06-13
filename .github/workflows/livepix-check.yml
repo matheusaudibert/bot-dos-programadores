@@ -1,0 +1,34 @@
+name: LivePix Donation Check
+
+on:
+  schedule:
+    # Executa a cada 1 hora (0 minutos de cada hora)
+    - cron: "0 * * * *"
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  check-donations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run LivePix donation check
+        run: node src/scripts/livepix.js
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GUILD_ID: ${{ secrets.GUILD_ID }}
+          APOIADOR_ROLE_ID: ${{ secrets.APOIADOR_ROLE_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          CHAT_CHANNEL_ID: ${{ secrets.CHAT_CHANNEL_ID }}
