@@ -1,4 +1,6 @@
 require("dotenv").config();
+const express = require("express");
+const bodyParser = require("body-parser");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { handleTechButtonClick, sendTechEmbed } = require("./src/techs/techs");
 const {
@@ -6,9 +8,21 @@ const {
   sendColorEmbed,
 } = require("./src/colors/colors");
 const { handleBoost } = require("./src/messages/booster");
-// const { handleWelcome } = require("./src/messages/welcome"); Retirado por enquanto
 const { startRandomMessageInterval } = require("./src/messages/random");
-// Criar uma nova instância do cliente
+
+// Criar app Express
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middlewares
+app.use(bodyParser.json());
+
+// Endpoints HTTP básicos
+app.get("/", (req, res) => {
+  res.send("Bot dos Programadores está rodando!");
+});
+
+// Criar instância do bot Discord
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -20,26 +34,19 @@ const client = new Client({
   ],
 });
 
-// Evento disparado quando o bot estiver pronto
+// Evento quando o bot estiver pronto
 client.once(Events.ClientReady, async (readyClient) => {
   console.log(`Bot conectado como ${readyClient.user.tag}`);
 
   try {
-    // Obtém o servidor principal do bot (primeiro servidor na lista)
     const guild = readyClient.guilds.cache.first();
-
     if (!guild) {
       console.error("Não foi possível encontrar nenhum servidor");
       return;
     }
 
-    // Enviar o embed de tecnologias após obter as informações do servidor
     await sendTechEmbed(readyClient);
-
-    // Enviar o embed de cores
     await sendColorEmbed(readyClient);
-
-    // Iniciar o envio de mensagens aleatórias
     startRandomMessageInterval(readyClient);
   } catch (error) {
     console.error("Erro ao processar informações do servidor:", error);
@@ -55,37 +62,19 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
-// Manipular evento de atualização de membro (para boosts)
+// Manipular evento de boost
 client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
-  // Verifica se o membro começou a impulsionar (premiumSinceTimestamp tornou-se não nulo)
   if (!oldMember.premiumSince && newMember.premiumSince) {
     await handleBoost(newMember);
   }
 });
 
-// Manipular evento de entrada de novo membro
-// client.on(Events.GuildMemberAdd, async (member) => {
-//   await handleWelcome(member);
-// }); Retirado por enquanto
-
-// Servidor HTTP para o Render
-const express = require("express");
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-  res.send("Bot dos Programadores está rodando!");
-});
-
-app.get("/health", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date().toISOString() });
-});
-
+// Iniciar servidor Express
 app.listen(PORT, () => {
   console.log(`Servidor HTTP rodando na porta ${PORT}`);
 });
 
-// Fazer login com o token do bot
+// Login no Discord
 client
   .login(process.env.BOT_TOKEN)
   .then(() => console.log("Logando..."))

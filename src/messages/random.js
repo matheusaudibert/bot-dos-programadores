@@ -16,10 +16,10 @@ const RANDOM_MESSAGES = [
   //     `Confira as vagas de programação no canal <#${channelId}>.`,
   //   channelIdVar: "VACANCY_CHANNEL_ID",
   // },
-  // {
-  //   text: (channelId) => `Leia a nossa newsletter no canal <#${channelId}>.`,
-  //   channelIdVar: "NEWSLETTERS_CHANNEL_ID",
-  // },
+  {
+    text: (channelId) => `Leia a nossa newsletter no canal <#${channelId}>.`,
+    channelIdVar: "NEWSLETTERS_CHANNEL_ID",
+  },
   {
     text: (channelId) =>
       `Entenda como funciona os cargos do servidor no canal <#${channelId}>.`,
